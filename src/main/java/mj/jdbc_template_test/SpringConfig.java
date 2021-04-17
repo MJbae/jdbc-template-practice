@@ -1,21 +1,21 @@
-package mj.jdbc_template_test;
-
-import mj.jdbc_template_test.repository.JdbcTemplateMemberRepository;
-import mj.jdbc_template_test.repository.MemberRepository;
-import mj.jdbc_template_test.service.MemberService;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
-
-@Configuration
-public class SpringConfig {
-    private final DataSource dataSource;
-
-    public SpringConfig(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
+//package mj.jdbc_template_test;
+//
+//import mj.jdbc_template_test.repository.JdbcTemplateMemberRepository;
+//import mj.jdbc_template_test.repository.MemberRepository;
+//import mj.jdbc_template_test.service.MemberService;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//
+//import javax.sql.DataSource;
+//
+//@Configuration
+//public class SpringConfig {
+//    private final DataSource dataSource;
+//
+//    public SpringConfig(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
+//
 //    @Bean
 //    public MemberService memberService() {
 //        return new MemberService(memberRepository());
@@ -23,8 +23,6 @@ public class SpringConfig {
 //
 //    @Bean
 //    public MemberRepository memberRepository() {
-////        return new MemoryMemberRepository();
-////        return new JdbcMemberRepository(dataSource);
 //        return new JdbcTemplateMemberRepository(dataSource);
 //    }
-}
+//}
