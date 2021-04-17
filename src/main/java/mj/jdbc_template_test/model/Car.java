@@ -1,8 +1,10 @@
-package mj.jdbc_template_test.domain;
+package mj.jdbc_template_test.model;
 
-public class Member {
+public class Car {
+
     private Long id;
     private String name;
+    private int price;
 
     public Long getId() {
         return id;
@@ -20,11 +22,11 @@ public class Member {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }
