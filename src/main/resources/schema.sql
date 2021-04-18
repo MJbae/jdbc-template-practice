@@ -1,6 +1,8 @@
-DROP TABLE IF EXISTS member;
+DROP TABLE IF EXISTS `employees`;
 
-CREATE TABLE IF NOT EXISTS member(
-    id int auto_increment primary key,
-    name varchar(64)
+CREATE TABLE if not exists `employees`(
+  `id` bigint(20) auto_increment NOT NULL primary key,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `yearly_income` bigint(20) NOT NULL
 );
