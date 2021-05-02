@@ -2,15 +2,23 @@ package mj.jdbc_template_test.web;
 
 import mj.jdbc_template_test.domain.user.User;
 import mj.jdbc_template_test.service.UserService;
+import mj.jdbc_template_test.web.dto.TokenDto;
 import mj.jdbc_template_test.web.dto.UserResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,7 +28,10 @@ import java.util.List;
 @RestController
 public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
+
     private final Environment environment;
+    private final UserService userService;
+    private final RestTemplate restTemplate;
 
     private static final String LOGIN_URI = "github.authorize.url";
     private static final String REDIRECT_URI = "github.callback.url";
@@ -32,13 +43,10 @@ public class UserController {
     private String clientId;
     private String redirectUri;
 
-
-
-    public final UserService userService;
-
-    public UserController(UserService userService, Environment environment) {
+    public UserController(UserService userService, Environment environment, RestTemplateBuilder restTemplateBuilder) {
         this.userService = userService;
         this.environment = environment;
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     @GetMapping("/users")
@@ -64,16 +72,28 @@ public class UserController {
     }
 
     @GetMapping("/login/callback")
-    public void callbackByOauth(@RequestParam("code") String tempCode) {
+    public TokenDto callbackByOauth(@RequestParam("code") String tempCode) {
         logger.info("callback code: {}", tempCode);
 
-//        TokenDTO tokenDTO = getTokenByTempCode(tempCode);
+        return getTokenByTempCode(tempCode);
+    }
 
-
+    private TokenDto getTokenByTempCode(String tempCode) {
+        //TODO: null 처리 어떻게?
         String accessTokenUri = environment.getProperty(TOKEN_URI);
         String clientSecret = environment.getProperty(CLIENT_SECRET);
 
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(accessTokenUri)
+                .queryParam("client_id", clientId)
+                .queryParam("client_secret", clientSecret)
+                .queryParam("code", tempCode);
 
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+        httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
+
+        return restTemplate.exchange(builder.toUriString(), HttpMethod.POST, httpEntity, TokenDto.class).getBody();
     }
 
 }
