@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class EmployeeRepository {
@@ -28,6 +29,11 @@ public class EmployeeRepository {
     public List<Employee> findAll() {
         String sqlQuery = "select id, first_name, last_name, yearly_income from employees";
         return jdbcTemplate.query(sqlQuery, memberRowMapper());
+    }
+
+    public Employee findById(long id) {
+        String sqlQuery = "select id, first_name, last_name, yearly_income from employees where id = ?";
+        return jdbcTemplate.queryForObject(sqlQuery, memberRowMapper(), id);
     }
 
     public void save(Employee employee) {

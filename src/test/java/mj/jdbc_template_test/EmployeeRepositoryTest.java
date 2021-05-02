@@ -34,8 +34,14 @@ class EmployeeRepositoryTest {
     private final static String LAST_NAME_T = "T";
     private final static long INCOME_T = 30000;
 
-    private final Employee employeeMJ = new Employee(FIRST_NAME_MJ, LAST_NAME_MJ, INCOME_MJ);
-    private final Employee employeeTT = new Employee(FIRST_NAME_T, LAST_NAME_T, INCOME_T);
+    private Employee employeeMJ;
+    private Employee employeeTT;
+
+    @BeforeEach
+    void setData(){
+        employeeMJ = new Employee(FIRST_NAME_MJ, LAST_NAME_MJ, INCOME_MJ);
+        employeeTT = new Employee(FIRST_NAME_T, LAST_NAME_T, INCOME_T);
+    }
 
     @AfterEach
     void cleanup() {
@@ -87,6 +93,16 @@ class EmployeeRepositoryTest {
         assertThat(employee.getYearlyIncome()).isEqualTo(INCOME_T);
     }
 
+    @Test
+    void deleteEmployee(){
+        Long id = 3L;
+        int sizeBefore = employeeRepository.findAll().size();
+
+        assertThat(employeeRepository.delete(id)).isTrue();
+
+        int sizeAfter = employeeRepository.findAll().size();
+        assertThat(sizeAfter).isEqualTo(sizeBefore - 1);
+     }
 
 
 }
