@@ -8,7 +8,7 @@ public class UserResponseDto {
     private String lastName;
     private long yearlyIncome;
 
-    public UserResponseDto(User user){
+    public UserResponseDto(User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.yearlyIncome = user.getYearlyIncome();
