@@ -1,4 +1,6 @@
 package mj.jdbc_template_test.domain.user;
+import mj.jdbc_template_test.web.dto.GithubUserInfoDto;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,10 @@ public class User {
         this.lastName = lastName;
         this.githubId = githubId;
         this.yearlyIncome = yearlyIncome;
+    }
+
+    public void update(GithubUserInfoDto githubUserInfoDto) {
+        this.firstName = githubUserInfoDto.getName();
     }
 
     public Map<String, Object> toMap() {
@@ -69,4 +75,6 @@ public class User {
     public void setYearlyIncome(long yearlyIncome) {
         this.yearlyIncome = yearlyIncome;
     }
+
+
 }

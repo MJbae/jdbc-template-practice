@@ -24,7 +24,7 @@ public class UserRepository {
         return jdbcTemplate.query(sqlQuery, memberRowMapper());
     }
 
-    public User findByGithubId(long githubId) {
+    public User findByGithubId(String githubId) {
         String sqlQuery = "select id, first_name, last_name, github_id, yearly_income from employees where github_id = ?";
         return jdbcTemplate.queryForObject(sqlQuery, memberRowMapper(), githubId);
     }

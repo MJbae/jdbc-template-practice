@@ -13,6 +13,7 @@ public class UriUtil {
 
     private Environment environment;
 
+    private static final String USERINFO_URI = "github.access.user.url";
     private static final String LOGIN_URI = "github.authorize.url";
     private static final String REDIRECT_URI = "github.callback.url";
     private static final String TOKEN_URI = "github.access.token.url";
@@ -43,14 +44,13 @@ public class UriUtil {
         String accessTokenUri = environment.getProperty(TOKEN_URI);
         String clientSecret = environment.getProperty(CLIENT_SECRET);
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(accessTokenUri)
-                .queryParam("client_id", clientId)
-                .queryParam("client_secret", clientSecret)
-                .queryParam("code", tempCode);
-
         return accessTokenUri
                 + "?client_id=" + clientId
                 + "&client_secret=" + clientSecret
                 + "&code=" + tempCode;
+    }
+
+    public String getUserInfoUri() {
+        return environment.getProperty(USERINFO_URI);
     }
 }

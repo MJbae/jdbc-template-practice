@@ -3,6 +3,7 @@ package mj.jdbc_template_test.web;
 import mj.jdbc_template_test.service.UserService;
 import mj.jdbc_template_test.util.UriUtil;
 import mj.jdbc_template_test.web.dto.TokenDto;
+import mj.jdbc_template_test.web.dto.GithubUserInfoDto;
 import mj.jdbc_template_test.web.dto.UserResponseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,12 @@ public class UserController {
     }
 
     @GetMapping("/login/callback")
-    public TokenDto callbackByOauth(@RequestParam("code") String tempCode) {
+    public UserResponseDto callbackByOauth(@RequestParam("code") String tempCode) {
         logger.info("callback code: {}", tempCode);
 
-        return userService.getTokenByTempCode(tempCode);
+        TokenDto accessToken = userService.getTokenByTempCode(tempCode);
+        GithubUserInfoDto githubUserInfoDto = userService.getUserInfo(accessToken.getAccess_token());
+
+        return userService.login(githubUserInfoDto);
     }
 }
