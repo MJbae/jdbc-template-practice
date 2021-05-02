@@ -20,21 +20,22 @@ public class UserRepository {
     }
 
     public List<User> findAll() {
-        String sqlQuery = "select id, first_name, last_name, yearly_income from employees";
+        String sqlQuery = "select id, first_name, last_name, github_id, yearly_income from employees";
         return jdbcTemplate.query(sqlQuery, memberRowMapper());
     }
 
-    public User findById(long id) {
-        String sqlQuery = "select id, first_name, last_name, yearly_income from employees where id = ?";
-        return jdbcTemplate.queryForObject(sqlQuery, memberRowMapper(), id);
+    public User findByGithubId(long githubId) {
+        String sqlQuery = "select id, first_name, last_name, github_id, yearly_income from employees where github_id = ?";
+        return jdbcTemplate.queryForObject(sqlQuery, memberRowMapper(), githubId);
     }
 
     public void save(User user) {
-        String sqlQuery = "insert into employees(first_name, last_name, yearly_income) " +
-                "values (?, ?, ?)";
+        String sqlQuery = "insert into employees(first_name, last_name, github_id, yearly_income) " +
+                "values (?, ?, ?, ?)";
         jdbcTemplate.update(sqlQuery,
                 user.getFirstName(),
                 user.getLastName(),
+                user.getGithubId(),
                 user.getYearlyIncome());
     }
 
@@ -47,12 +48,13 @@ public class UserRepository {
 
     public void update(User user) {
         String sqlQuery = "update employees set " +
-                "first_name = ?, last_name = ?, yearly_income = ? " +
+                "first_name = ?, last_name = ?, github_id = ?, yearly_income = ? " +
                 "where id = ?";
 
         jdbcTemplate.update(sqlQuery
                 , user.getFirstName()
                 , user.getLastName()
+                , user.getGithubId()
                 , user.getYearlyIncome()
                 , user.getId());
     }
@@ -68,6 +70,7 @@ public class UserRepository {
             user.setId(rs.getLong("id"));
             user.setFirstName(rs.getString("first_name"));
             user.setLastName(rs.getString("last_name"));
+            user.setGithubId(rs.getString("github_id"));
             user.setYearlyIncome(rs.getLong("yearly_income"));
             return user;
         };

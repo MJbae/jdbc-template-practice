@@ -37,8 +37,8 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setData(){
-        userMJ = new User(FIRST_NAME_MJ, LAST_NAME_MJ, INCOME_MJ);
-        userTT = new User(FIRST_NAME_T, LAST_NAME_T, INCOME_T);
+        userMJ = new User(FIRST_NAME_MJ, LAST_NAME_MJ, null, INCOME_MJ);
+        userTT = new User(FIRST_NAME_T, LAST_NAME_T, null, INCOME_T);
     }
 
     @AfterEach
