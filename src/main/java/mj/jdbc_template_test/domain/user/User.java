@@ -1,18 +1,18 @@
-package mj.jdbc_template_test.model;
+package mj.jdbc_template_test.domain.user;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Employee {
+public class User {
 
     private long id;
     private String firstName;
     private String lastName;
     private long yearlyIncome;
 
-    public Employee() {
+    public User() {
     }
 
-    public Employee(String firstName, String lastName, long yearlyIncome) {
+    public User(String firstName, String lastName, long yearlyIncome) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.yearlyIncome = yearlyIncome;
