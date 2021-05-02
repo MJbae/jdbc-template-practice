@@ -1,6 +1,7 @@
 package mj.jdbc_template_test.web;
 
 import mj.jdbc_template_test.service.UserService;
+import mj.jdbc_template_test.util.UriUtil;
 import mj.jdbc_template_test.web.dto.TokenDto;
 import mj.jdbc_template_test.web.dto.UserResponseDto;
 import org.slf4j.Logger;
@@ -18,9 +19,11 @@ public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
+    private final UriUtil uriUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UriUtil uriUtil) {
         this.userService = userService;
+        this.uriUtil = uriUtil;
     }
 
     @GetMapping("/users")
@@ -34,7 +37,7 @@ public class UserController {
     public void login(HttpServletResponse response) throws IOException {
         logger.info("login");
 
-        response.sendRedirect(userService.getTempCodeUri());
+        response.sendRedirect(uriUtil.getTempCodeUri());
     }
 
     @GetMapping("/login/callback")
