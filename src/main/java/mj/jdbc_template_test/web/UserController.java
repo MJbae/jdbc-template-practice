@@ -1,12 +1,13 @@
 package mj.jdbc_template_test.web;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import mj.jdbc_template_test.service.UserService;
 import mj.jdbc_template_test.util.UriUtil;
-import mj.jdbc_template_test.web.dto.TokenDto;
-import mj.jdbc_template_test.web.dto.GithubUserInfoDto;
-import mj.jdbc_template_test.web.dto.UserResponseDto;
+import mj.jdbc_template_test.web.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,12 +43,27 @@ public class UserController {
     }
 
     @GetMapping("/login/callback")
-    public UserResponseDto callbackByOauth(@RequestParam("code") String tempCode) {
+    public ResponseEntity<Jwt> callbackByOauth(@RequestParam("code") String tempCode) {
         logger.info("callback code: {}", tempCode);
 
         TokenDto accessToken = userService.getTokenByTempCode(tempCode);
-        GithubUserInfoDto githubUserInfoDto = userService.getUserInfo(accessToken.getAccess_token());
+        GitHubUser gitHubUser = userService.getUserInfo(accessToken.getAccess_token());
 
-        return userService.login(githubUserInfoDto);
+        logger.info("gitHubUser: {}", gitHubUser);
+
+        String jwt = getJwt(gitHubUser);
+
+        return ResponseEntity.ok(new Jwt(jwt));
+//        return userService.login(gitHubUser);
+    }
+
+    private String getJwt(GitHubUser gitHubUser) {
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+
+        return JWT.create()
+                .withClaim("login", gitHubUser.getLogin())
+                .withClaim("name", gitHubUser.getName())
+                .withIssuer("jwtTest")
+                .sign(algorithm);
     }
 }

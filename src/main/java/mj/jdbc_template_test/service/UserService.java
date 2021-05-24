@@ -4,6 +4,7 @@ import mj.jdbc_template_test.domain.user.User;
 import mj.jdbc_template_test.domain.user.UserRepository;
 import mj.jdbc_template_test.util.UriUtil;
 import mj.jdbc_template_test.web.UserController;
+import mj.jdbc_template_test.web.dto.GitHubUser;
 import mj.jdbc_template_test.web.dto.TokenDto;
 import mj.jdbc_template_test.web.dto.GithubUserInfoDto;
 import mj.jdbc_template_test.web.dto.UserResponseDto;
@@ -35,13 +36,13 @@ public class UserService {
         this.uriUtil = uriUtil;
     }
 
-    public UserResponseDto login(GithubUserInfoDto githubUserInfoDto) {
-        User user = userRepository.findByGithubId(githubUserInfoDto.getId());
-
-        user.update(githubUserInfoDto);
-
-        return new UserResponseDto(user);
-    }
+//    public UserResponseDto login(GithubUserInfoDto githubUserInfoDto) {
+//        User user = userRepository.findByGithubId(githubUserInfoDto.getId());
+//
+//        user.update(githubUserInfoDto);
+//
+//        return new UserResponseDto(user);
+//    }
 
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAll().stream()
@@ -61,11 +62,11 @@ public class UserService {
         return restTemplate.exchange(uriUtil.getAccessTokenUri(tempCode), HttpMethod.POST, httpEntity, TokenDto.class).getBody();
     }
 
-    public GithubUserInfoDto getUserInfo(String accessToken) {
+    public GitHubUser getUserInfo(String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(HttpHeaders.AUTHORIZATION, "token " + accessToken);
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
-        return restTemplate.exchange(uriUtil.getUserInfoUri(), HttpMethod.GET, httpEntity, GithubUserInfoDto.class).getBody();
+        return restTemplate.exchange(uriUtil.getUserInfoUri(), HttpMethod.GET, httpEntity, GitHubUser.class).getBody();
     }
 }
