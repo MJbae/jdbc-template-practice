@@ -44,16 +44,17 @@ public class LoginController {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    @GetMapping
+    @GetMapping("/callback")
     public void login(HttpServletResponse response) throws IOException {
         logger.info("login");
 
         response.sendRedirect(uriUtil.getTempCodeUri());
     }
 
-    @GetMapping("/callback")
+    @GetMapping("/auth")
     public ResponseEntity<Jwt> callbackByOauth(@RequestParam("code") String tempCode) {
 
+        logger.info("code: {}", tempCode);
         TokenDto accessToken = getTokenByTempCode(tempCode);
         GitHubUser gitHubUser = getUserInfo(accessToken.getAccess_token());
 

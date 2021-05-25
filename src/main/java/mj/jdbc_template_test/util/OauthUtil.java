@@ -23,6 +23,7 @@ public class OauthUtil {
     public String getJwtIssuer(){
         return environment.getProperty("jwt.issuer");
     }
+
     public int getJwtExpireSecs(){
         return Integer.parseInt(Objects.requireNonNull(environment.getProperty("jwt.expire.sec")));
     }
