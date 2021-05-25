@@ -23,50 +23,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
-    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public final UserRepository userRepository;
-    private final RestTemplate restTemplate;
-    private final UriUtil uriUtil;
 
-
-    public UserService(UserRepository userRepository, RestTemplateBuilder restTemplateBuilder, UriUtil uriUtil) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.restTemplate = restTemplateBuilder.build();
-        this.uriUtil = uriUtil;
     }
-
-//    public UserResponseDto login(GithubUserInfoDto githubUserInfoDto) {
-//        User user = userRepository.findByGithubId(githubUserInfoDto.getId());
-//
-//        user.update(githubUserInfoDto);
-//
-//        return new UserResponseDto(user);
-//    }
 
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAll().stream()
                 .map(user -> new UserResponseDto(user))
                 .collect(Collectors.toList());
-    }
-
-    public TokenDto getTokenByTempCode(String tempCode) {
-        //TODO: null 처리 어떻게?
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        httpHeaders.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-
-
-        logger.info("temp uri : {}", uriUtil.getAccessTokenUri(tempCode));
-        return restTemplate.exchange(uriUtil.getAccessTokenUri(tempCode), HttpMethod.POST, httpEntity, TokenDto.class).getBody();
-    }
-
-    public GitHubUser getUserInfo(String accessToken) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.AUTHORIZATION, "token " + accessToken);
-        HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
-
-        return restTemplate.exchange(uriUtil.getUserInfoUri(), HttpMethod.GET, httpEntity, GitHubUser.class).getBody();
     }
 }

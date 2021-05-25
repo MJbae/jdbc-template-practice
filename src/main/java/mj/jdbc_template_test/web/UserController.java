@@ -18,54 +18,20 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
-    private final UriUtil uriUtil;
 
-    public UserController(UserService userService, UriUtil uriUtil) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.uriUtil = uriUtil;
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public List<UserResponseDto> viewAllUsers() {
         logger.info("모든 사용자 정보 요청");
 
         return userService.findAllUser();
-    }
-
-    @GetMapping("/login")
-    public void login(HttpServletResponse response) throws IOException {
-        logger.info("login");
-
-        response.sendRedirect(uriUtil.getTempCodeUri());
-    }
-
-    @GetMapping("/login/callback")
-    public ResponseEntity<Jwt> callbackByOauth(@RequestParam("code") String tempCode) {
-        logger.info("callback code: {}", tempCode);
-
-        TokenDto accessToken = userService.getTokenByTempCode(tempCode);
-        GitHubUser gitHubUser = userService.getUserInfo(accessToken.getAccess_token());
-
-        logger.info("gitHubUser: {}", gitHubUser);
-
-        String jwt = getJwt(gitHubUser);
-
-        return ResponseEntity.ok(new Jwt(jwt));
-//        return userService.login(gitHubUser);
-    }
-
-    private String getJwt(GitHubUser gitHubUser) {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
-
-        return JWT.create()
-                .withClaim("login", gitHubUser.getLogin())
-                .withClaim("name", gitHubUser.getName())
-                // TODO: 추후 properties에서 관리
-                .withIssuer("baseball-game")
-                .sign(algorithm);
     }
 }

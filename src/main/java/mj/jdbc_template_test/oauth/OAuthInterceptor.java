@@ -1,4 +1,4 @@
-package mj.jdbc_template_test.web;
+package mj.jdbc_template_test.oauth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
