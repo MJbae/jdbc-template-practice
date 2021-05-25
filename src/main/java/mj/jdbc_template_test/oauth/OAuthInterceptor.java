@@ -5,7 +5,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import mj.jdbc_template_test.util.OauthUtil;
+import mj.jdbc_template_test.web.UserController;
 import mj.jdbc_template_test.web.dto.GitHubUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +19,18 @@ public class OAuthInterceptor implements HandlerInterceptor {
 
     private final JWTVerifier verifier;
     private final String TOKEN_TYPE = "Bearer";
+    private final OauthUtil oauthUtil;
+    private final Logger logger = LoggerFactory.getLogger(OAuthInterceptor.class);
 
-    public OAuthInterceptor() {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+    public OAuthInterceptor(OauthUtil oauthUtil) {
+        this.oauthUtil = oauthUtil;
+
+        logger.info("secret: {}", oauthUtil.getJwtSecret());
+        logger.info("issuer: {}", oauthUtil.getJwtIssuer());
+
+        Algorithm algorithm = Algorithm.HMAC256(oauthUtil.getJwtSecret());
         verifier = JWT.require(algorithm)
-                .withIssuer("baseball-game")
+                .withIssuer(oauthUtil.getJwtIssuer())
                 .build();
     }
 

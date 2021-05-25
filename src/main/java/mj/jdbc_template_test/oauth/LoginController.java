@@ -3,6 +3,7 @@ package mj.jdbc_template_test.oauth;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import mj.jdbc_template_test.service.UserService;
+import mj.jdbc_template_test.util.OauthUtil;
 import mj.jdbc_template_test.util.UriUtil;
 import mj.jdbc_template_test.web.UserController;
 import mj.jdbc_template_test.web.dto.GitHubUser;
@@ -29,10 +30,12 @@ public class LoginController {
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UriUtil uriUtil;
+    private final OauthUtil oauthUtil;
     private final RestTemplate restTemplate;
 
-    public LoginController(UriUtil uriUtil, RestTemplateBuilder restTemplateBuilder) {
+    public LoginController(UriUtil uriUtil, OauthUtil oauthUtil, RestTemplateBuilder restTemplateBuilder) {
         this.uriUtil = uriUtil;
+        this.oauthUtil = oauthUtil;
         this.restTemplate = restTemplateBuilder.build();
     }
 
@@ -55,13 +58,13 @@ public class LoginController {
     }
 
     private String getJwt(GitHubUser gitHubUser) {
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+        Algorithm algorithm = Algorithm.HMAC256(oauthUtil.getJwtSecret());
 
         return JWT.create()
                 .withClaim("login", gitHubUser.getLogin())
                 .withClaim("name", gitHubUser.getName())
                 // TODO: 추후 properties에서 관리
-                .withIssuer("baseball-game")
+                .withIssuer(oauthUtil.getJwtIssuer())
                 .sign(algorithm);
     }
 
