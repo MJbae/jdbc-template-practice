@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -29,8 +30,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponseDto> viewAllUsers() {
-        logger.info("모든 사용자 정보 요청");
+    public List<UserResponseDto> viewAllUsers(HttpServletRequest request) {
+        GitHubUser user = (GitHubUser) request.getAttribute("user");
+        logger.info("user login 확인: {}", user.getLogin());
 
         return userService.findAllUser();
     }

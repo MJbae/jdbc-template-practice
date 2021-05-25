@@ -19,14 +19,8 @@ public class OAuthInterceptor implements HandlerInterceptor {
 
     private final JWTVerifier verifier;
     private final String TOKEN_TYPE = "Bearer";
-    private final OauthUtil oauthUtil;
-    private final Logger logger = LoggerFactory.getLogger(OAuthInterceptor.class);
 
     public OAuthInterceptor(OauthUtil oauthUtil) {
-        this.oauthUtil = oauthUtil;
-
-        logger.info("secret: {}", oauthUtil.getJwtSecret());
-        logger.info("issuer: {}", oauthUtil.getJwtIssuer());
 
         Algorithm algorithm = Algorithm.HMAC256(oauthUtil.getJwtSecret());
         verifier = JWT.require(algorithm)
