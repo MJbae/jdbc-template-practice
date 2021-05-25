@@ -22,6 +22,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -63,8 +68,8 @@ public class LoginController {
         return JWT.create()
                 .withClaim("login", gitHubUser.getLogin())
                 .withClaim("name", gitHubUser.getName())
-                // TODO: 추후 properties에서 관리
                 .withIssuer(oauthUtil.getJwtIssuer())
+                .withExpiresAt(toDate(LocalDateTime.now().plusSeconds(oauthUtil.getJwtExpireSecs())))
                 .sign(algorithm);
     }
 
@@ -76,6 +81,10 @@ public class LoginController {
         HttpEntity<?> httpEntity = new HttpEntity<>(httpHeaders);
 
         return restTemplate.exchange(uriUtil.getAccessTokenUri(tempCode), HttpMethod.POST, httpEntity, TokenDto.class).getBody();
+    }
+
+    private Date toDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private GitHubUser getUserInfo(String accessToken) {

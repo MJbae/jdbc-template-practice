@@ -4,6 +4,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 @PropertySource("classpath:/oauth.properties")
 public class OauthUtil {
@@ -20,5 +22,8 @@ public class OauthUtil {
 
     public String getJwtIssuer(){
         return environment.getProperty("jwt.issuer");
+    }
+    public int getJwtExpireSecs(){
+        return Integer.parseInt(Objects.requireNonNull(environment.getProperty("jwt.expire.sec")));
     }
 }
