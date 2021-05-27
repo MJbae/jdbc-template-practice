@@ -3,6 +3,7 @@ package mj.jdbc_template_test.oauth;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import mj.jdbc_template_test.util.OauthUtil;
+import mj.jdbc_template_test.util.OauthiOSUtil;
 import mj.jdbc_template_test.util.UriUtil;
 import mj.jdbc_template_test.web.UserController;
 import mj.jdbc_template_test.web.dto.GitHubUser;
@@ -29,10 +30,12 @@ public class LoginController {
     private final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private final UriUtil uriUtil;
     private final OauthUtil oauthUtil;
+    private final OauthiOSUtil oauthiOSUtil;
 
-    public LoginController(UriUtil uriUtil, OauthUtil oauthUtil) {
+    public LoginController(UriUtil uriUtil, OauthUtil oauthUtil, OauthiOSUtil oauthiOSUtil) {
         this.uriUtil = uriUtil;
         this.oauthUtil = oauthUtil;
+        this.oauthiOSUtil = oauthiOSUtil;
     }
 
     @GetMapping("/auth")
@@ -41,7 +44,24 @@ public class LoginController {
 
         RestTemplate gitHubRequest = new RestTemplate();
 
-        GithubAccessTokenResponse accessToken = getTokenByTempCode(code, gitHubRequest)
+        GithubAccessTokenResponse accessToken = getTokenByTempCode(code, gitHubRequest, oauthUtil)
+                .orElseThrow(() -> new RuntimeException("no access Token"));
+
+        GitHubUser gitHubUser = getUserInfo(accessToken, gitHubRequest)
+                .orElseThrow(() -> new RuntimeException("no Github User"));
+
+        String jwt = getJwt(gitHubUser);
+
+        return ResponseEntity.ok(new Jwt(jwt));
+    }
+
+    @GetMapping("/auth/iOS")
+    public ResponseEntity<Jwt> callbackByOauthForiOS(String code) {
+        logger.info("code: {}", code);
+
+        RestTemplate gitHubRequest = new RestTemplate();
+
+        GithubAccessTokenResponse accessToken = getTokenByTempCode(code, gitHubRequest, oauthiOSUtil)
                 .orElseThrow(() -> new RuntimeException("no access Token"));
 
         GitHubUser gitHubUser = getUserInfo(accessToken, gitHubRequest)
@@ -63,7 +83,19 @@ public class LoginController {
                 .sign(algorithm);
     }
 
-    private Optional<GithubAccessTokenResponse> getTokenByTempCode(String code, RestTemplate gitHubRequest) {
+    private Optional<GithubAccessTokenResponse> getTokenByTempCode(String code, RestTemplate gitHubRequest, OauthUtil oauthUtil) {
+        RequestEntity<GithubAccessTokenRequest> request = RequestEntity
+                .post(uriUtil.getTokenUri())
+                .header("Accept", "application/json")
+                .body(new GithubAccessTokenRequest(oauthUtil.getClientId(), oauthUtil.getSecretId(), code));
+
+        ResponseEntity<GithubAccessTokenResponse> response = gitHubRequest
+                .exchange(request, GithubAccessTokenResponse.class);
+
+        return Optional.ofNullable(response.getBody());
+    }
+
+    private Optional<GithubAccessTokenResponse> getTokenByTempCode(String code, RestTemplate gitHubRequest, OauthiOSUtil oauthUtil) {
         RequestEntity<GithubAccessTokenRequest> request = RequestEntity
                 .post(uriUtil.getTokenUri())
                 .header("Accept", "application/json")
