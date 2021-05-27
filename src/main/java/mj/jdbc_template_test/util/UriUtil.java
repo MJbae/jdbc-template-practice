@@ -40,7 +40,7 @@ public class UriUtil {
                 + "&scope=" + scope;
     }
 
-    public String getAccessTokenUri(String tempCode) {
+    public String getAccessTokenUriWithCode(String tempCode) {
         String accessTokenUri = environment.getProperty(TOKEN_URI);
         String clientSecret = environment.getProperty(CLIENT_SECRET);
 
@@ -48,6 +48,10 @@ public class UriUtil {
                 + "?client_id=" + clientId
                 + "&client_secret=" + clientSecret
                 + "&code=" + tempCode;
+    }
+
+    public String getTokenUri() {
+        return environment.getProperty(TOKEN_URI);
     }
 
     public String getUserInfoUri() {

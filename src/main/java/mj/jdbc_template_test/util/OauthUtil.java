@@ -16,6 +16,14 @@ public class OauthUtil {
         this.environment = environment;
     }
 
+    public String getClientId(){
+        return environment.getProperty("github.client.id");
+    }
+
+    public String getSecretId(){
+        return environment.getProperty("github.secret");
+    }
+
     public String getJwtSecret(){
         return environment.getProperty("jwt.algorithm.secret");
     }
@@ -23,6 +31,7 @@ public class OauthUtil {
     public String getJwtIssuer(){
         return environment.getProperty("jwt.issuer");
     }
+
     public int getJwtExpireSecs(){
         return Integer.parseInt(Objects.requireNonNull(environment.getProperty("jwt.expire.sec")));
     }
