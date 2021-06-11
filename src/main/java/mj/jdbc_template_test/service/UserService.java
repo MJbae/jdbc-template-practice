@@ -35,4 +35,8 @@ public class UserService {
                 .map(user -> new UserResponseDto(user))
                 .collect(Collectors.toList());
     }
+
+    public UserResponseDto findOneByUserId(Long userId) {
+        return new UserResponseDto(userRepository.findByGithubId(userId));
+    }
 }

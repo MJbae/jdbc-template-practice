@@ -24,7 +24,7 @@ public class UserRepository {
         return jdbcTemplate.query(sqlQuery, memberRowMapper());
     }
 
-    public User findByGithubId(String githubId) {
+    public User findByGithubId(Long githubId) {
         String sqlQuery = "select id, first_name, last_name, github_id, yearly_income from employees where github_id = ?";
         return jdbcTemplate.queryForObject(sqlQuery, memberRowMapper(), githubId);
     }
@@ -64,13 +64,19 @@ public class UserRepository {
         return jdbcTemplate.update(sqlQuery, id) > 0;
     }
 
+
+    public boolean deleteAll() {
+        String sqlQuery = "delete from employees";
+        return jdbcTemplate.update(sqlQuery) > 0;
+    }
+
     private RowMapper<User> memberRowMapper() {
         return (rs, rowNum) -> {
             User user = new User();
             user.setId(rs.getLong("id"));
             user.setFirstName(rs.getString("first_name"));
             user.setLastName(rs.getString("last_name"));
-            user.setGithubId(rs.getString("github_id"));
+            user.setGithubId(rs.getLong("github_id"));
             user.setYearlyIncome(rs.getLong("yearly_income"));
             return user;
         };

@@ -9,13 +9,13 @@ public class User {
     private long id;
     private String firstName;
     private String lastName;
-    private String githubId;
+    private long githubId;
     private long yearlyIncome;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String githubId, long yearlyIncome) {
+    public User(String firstName, String lastName, long githubId, long yearlyIncome) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.githubId = githubId;
@@ -48,7 +48,7 @@ public class User {
         return lastName;
     }
 
-    public String getGithubId() {
+    public long getGithubId() {
         return githubId;
     }
 
@@ -68,7 +68,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    public void setGithubId(String githubId) {
+    public void setGithubId(long githubId) {
         this.githubId = githubId;
     }
 

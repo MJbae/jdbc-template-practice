@@ -37,27 +37,13 @@ class UserRepositoryTest {
 
     @BeforeEach
     void setData(){
-        userMJ = new User(FIRST_NAME_MJ, LAST_NAME_MJ, null, INCOME_MJ);
-        userTT = new User(FIRST_NAME_T, LAST_NAME_T, null, INCOME_T);
+        userMJ = new User(FIRST_NAME_MJ, LAST_NAME_MJ, 123, INCOME_MJ);
+        userTT = new User(FIRST_NAME_T, LAST_NAME_T, 345, INCOME_T);
     }
 
     @AfterEach
     void cleanup() {
         jdbcTemplate.update("delete from employees where id > 3");
-    }
-
-    @Test
-    void saveTest() {
-        userRepository.save(userMJ);
-
-        List<User> users = userRepository.findAll();
-        User user = users.get(users.size() - 1);
-
-        assertThat(users).isNotNull();
-        assertThat(user.getId()).isEqualTo(users.size());
-        assertThat(user.getFirstName()).isEqualTo(FIRST_NAME_MJ);
-        assertThat(user.getLastName()).isEqualTo(LAST_NAME_MJ);
-        assertThat(user.getYearlyIncome()).isEqualTo(INCOME_MJ);
     }
 
     @Test
