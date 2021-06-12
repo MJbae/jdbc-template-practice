@@ -38,9 +38,9 @@ public class WebMockTest {
 
     @Test
     public void 유저아이디_조건에_따라_특정_사용자_조회() throws Exception {
-        String expectByFirstName = "$.[?(@.firstName == '%s')]";
-        String expectByLastName = "$.[?(@.lastName == '%s')]";
-        String expectByIncome = "$.[?(@.yearlyIncome == '%s')]";
+        String expectByFirstName = "$.[?(@.first_name == '%s')]";
+        String expectByLastName = "$.[?(@.last_name == '%s')]";
+        String expectByIncome = "$.[?(@.yearly_income == '%s')]";
 
         when(userService.findOneByUserId(GITHUB_ID_MJ)).thenReturn(
                 new UserResponseDto(new User(FIRST_NAME_MJ, LAST_NAME_MJ, GITHUB_ID_MJ, INCOME_MJ))

@@ -1,12 +1,18 @@
 package mj.jdbc_template_test.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import mj.jdbc_template_test.domain.user.User;
 
 public class UserResponseDto {
 
-    private String firstName;
-    private String lastName;
-    private long yearlyIncome;
+    @JsonProperty("first_name")
+    private final String firstName;
+
+    @JsonProperty("last_name")
+    private final String lastName;
+
+    @JsonProperty("yearly_income")
+    private final long yearlyIncome;
 
     public UserResponseDto(User user) {
         this.firstName = user.getFirstName();
