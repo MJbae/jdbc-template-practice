@@ -2,8 +2,8 @@ version: 0.0
 os: linux
 files:
   - source: /
-  - destination: /home/ubuntu/jdbc_template_test/ # 프로젝트 이름
-  - overwrite: yes
+    destination: /home/ubuntu/jdbc_template_test/ # 프로젝트 이름
+    overwrite: yes
 
 permissions:
   - object: /
